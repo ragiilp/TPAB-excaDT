@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konfigurasi Excavator dan Dump Truck | TPAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E6EAE8; --surface:#F7F8F6; --ink:#1E2529; --muted:#56636A; --line:#C6CECB;
+  --yellow:#E3A400; --yellow-soft:#FBEBB8; --yellow-ink:#2A2100; --soil:#94643D; --soil-light:#D8BC99;
+  --steel:#3D4A52; --truck:#2F6F86; --road:#B9B7AE; --ground:#DCD8CB; --sky:#DDE7EA;
+  --warn:#A2471B; --warn-bg:#F8E4DA; --focus:#0B6E99;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15191C; --surface:#1E2428; --ink:#E4E9E7; --muted:#9BA7AC; --line:#34403F;
+    --yellow:#F0B400; --yellow-soft:#4A3B0A; --yellow-ink:#1A1400; --soil:#B7835A; --soil-light:#5E4631;
+    --steel:#B9C6CC; --truck:#6FB3CB; --road:#3A3F3D; --ground:#262B2A; --sky:#22313A;
+    --warn:#F09A6E; --warn-bg:#3E2419; --focus:#5CC3EE;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15191C; --surface:#1E2428; --ink:#E4E9E7; --muted:#9BA7AC; --line:#34403F;
+  --yellow:#F0B400; --yellow-soft:#4A3B0A; --yellow-ink:#1A1400; --soil:#B7835A; --soil-light:#5E4631;
+  --steel:#B9C6CC; --truck:#6FB3CB; --road:#3A3F3D; --ground:#262B2A; --sky:#22313A;
+  --warn:#F09A6E; --warn-bg:#3E2419; --focus:#5CC3EE;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3","Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+h1,h2,h3,h4,.num,legend{font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif}
+header{max-width:1280px;margin:0 auto;padding:1.5rem 1.25rem .25rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:end}
+.stripe{width:14px;align-self:stretch;background:repeating-linear-gradient(-45deg,var(--yellow) 0 8px,var(--ink) 8px 16px);border-radius:2px}
+h1{font-size:clamp(1.9rem,4.4vw,3rem);line-height:1;margin:0;font-weight:700}
+header p{margin:.4rem 0 0;color:var(--muted);max-width:78ch}
+main{max-width:1280px;margin:0 auto;padding:1rem 1.25rem 2rem}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1.1rem}
+h2{font-size:1.55rem;font-weight:600;margin:0 0 .5rem;line-height:1.1}
+h3{font-size:1.2rem;font-weight:600;margin:1.1rem 0 .4rem}
+.concept{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.concept div{border-left:4px solid var(--yellow);padding:.1rem 0 .1rem .7rem}
+.concept b{font-family:"Barlow Condensed",sans-serif;font-size:1.15rem;display:block}
+.concept span{color:var(--muted);font-size:.93rem}
+
+.sim{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:1rem;align-items:start}
+#site{display:block;width:100%;height:auto;border-radius:4px;background:var(--ground)}
+.simstats div{border-top:1px solid var(--line);padding:.3rem 0}
+.simstats .num{font-size:1.45rem;font-weight:600;display:block;line-height:1.1}
+.simstats small{color:var(--muted)}
+.controls{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin:.5rem 0}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:.4rem .75rem;border-radius:4px}
+button.primary{background:var(--yellow);color:var(--yellow-ink);border-color:var(--yellow);font-weight:700;min-width:5.5rem}
+button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.88rem;color:var(--muted);margin-top:.4rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:.3rem}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:1.25rem;align-items:start;margin-top:1.25rem}
+fieldset{border:none;border-top:2px solid var(--ink);margin:0 0 1.2rem;padding:.5rem 0 0}
+legend{font-size:1.3rem;font-weight:600;padding-right:.5rem}
+legend span{display:inline-block;background:var(--ink);color:var(--surface);border-radius:3px;padding:0 .4rem;margin-right:.35rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.2rem 1rem}
+.f{display:flex;flex-direction:column;gap:.2rem;margin:.4rem 0}
+.f.full{grid-column:1/-1}
+label{font-weight:600;font-size:.95rem}
+label small,.hint{font-weight:400;color:var(--muted);font-size:.85rem}
+input[type=number],select{font:inherit;width:100%;padding:.4rem .5rem;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink)}
+input[type=number]{text-align:right}
+.check{display:flex;gap:.5rem;align-items:flex-start;margin:.5rem 0}
+.check input{margin-top:.3rem;accent-color:var(--yellow);width:1.05rem;height:1.05rem}
+.derived{font-size:.9rem;color:var(--muted);margin-top:.2rem}
+.derived b{color:var(--ink)}
+.msg{border-left:4px solid var(--warn);background:var(--warn-bg);padding:.5rem .7rem;margin:.5rem 0;border-radius:0 4px 4px 0;font-size:.93rem}
+.msg.info{border-color:var(--focus);background:var(--sky)}
+
+.results{position:sticky;top:1rem}
+.big{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;align-items:end;border-left:6px solid var(--yellow);padding-left:.9rem}
+.big .num{font-size:clamp(3.4rem,8vw,5rem);font-weight:700;line-height:.9}
+.big .lbl{font-size:1.05rem;color:var(--muted);padding-bottom:.35rem}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem 1rem;margin-top:1rem}
+.kpis div{border-top:1px solid var(--line);padding-top:.35rem}
+.kpis .num{display:block;font-size:1.55rem;font-weight:600;line-height:1.1}
+.kpis small{color:var(--muted)}
+.tabs{display:flex;gap:.4rem;margin:1.1rem 0 .8rem;flex-wrap:wrap}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.steps{margin:0;padding-left:1.6rem}
+.steps li{margin:0 0 .85rem}
+.steps li::marker{font-family:"Barlow Condensed",sans-serif;font-weight:700}
+.steps .what{font-weight:600;display:block}
+.steps h4{margin:1rem 0 .3rem -1.6rem;font-size:1.2rem;border-bottom:1px solid var(--line)}
+.fx{display:block;font-family:"Cambria Math","Times New Roman",serif;font-size:1.03rem;margin:.1rem 0;overflow-x:auto;white-space:nowrap}
+.fx b{font-family:"Barlow Condensed",sans-serif;font-size:1.16rem;background:var(--yellow);color:var(--yellow-ink);padding:0 .3rem;border-radius:3px}
+.src{font-size:.85rem;color:var(--muted)}
+.tbl-wrap{overflow-x:auto;margin:.3rem 0 1rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:.3rem .45rem;text-align:center}
+th{background:var(--bg);font-weight:600}
+td.l{text-align:left}
+td.on{background:var(--yellow);color:var(--yellow-ink);font-weight:700}
+tr.on td{background:var(--yellow-soft)}
+tr.on td.on{background:var(--yellow)}
+tr.cur td:first-child{box-shadow:inset 4px 0 0 var(--ink)}
+caption{text-align:left;font-weight:600;padding-bottom:.3rem}
+svg.chart{display:block;width:100%;height:auto}
+.notes li{color:var(--muted);max-width:88ch;margin-bottom:.3rem}
+.notes ul{padding-left:1.2rem}
+@media (max-width:1000px){ .layout,.sim{grid-template-columns:1fr} .results{position:static} .concept{grid-template-columns:1fr} }
+@media (max-width:520px){ .row{grid-template-columns:1fr} .kpis{grid-template-columns:1fr 1fr} }
+@media print{ body{background:#fff} .tabs,.noprint,.sim{display:none} .tabpanel[hidden]{display:block!important} .results{position:static} }
+</style>
+</head>
+<body>
+<header>
+  <div class="stripe" aria-hidden="true"></div>
+  <div>
+    <h1>Konfigurasi Excavator dan Dump Truck</h1>
+    <p>Pekerjaan galian dan pembuangan tanah ke disposal. Hitung produktivitas tiap alat, tentukan jumlah dump truck yang serasi dengan excavator, lalu dapatkan durasi pekerjaan. Rumus dan tabel mengacu pada Permen PUPR No. 8 Tahun 2023.</p>
+  </div>
+</header>
+
+<main>
+  <section class="concept panel" aria-label="Konsep konfigurasi alat">
+    <div><b>1. Produktivitas tiap alat</b><span>Excavator dengan rumus 28, dump truck dengan rumus 27. Waktu muat truk bergantung pada produktivitas excavator.</span></div>
+    <div><b>2. Keserasian (match)</b><span>Jumlah truk = produksi excavator ÷ produksi satu truk. Terlalu sedikit truk membuat excavator menunggu; terlalu banyak membuat truk antre.</span></div>
+    <div><b>3. Produksi sistem dan durasi</b><span>Produksi sistem sama dengan kelompok alat yang paling lambat. Durasi = volume ÷ produksi sistem.</span></div>
+  </section>
+
+  <section class="panel sim noprint" aria-label="Simulasi armada">
+    <div>
+      <svg id="site" viewBox="0 0 900 330" role="img" aria-label="Simulasi excavator memuat dump truck dan truk mengangkut ke disposal"></svg>
+      <div class="legend">
+        <span><i style="background:var(--truck)"></i>Truk kosong</span>
+        <span><i style="background:var(--soil)"></i>Truk bermuatan</span>
+        <span><i style="background:var(--yellow)"></i>Excavator</span>
+        <span>Truk di baris bawah kiri sedang antre menunggu dimuat.</span>
+      </div>
+      <p class="src" style="max-width:85ch">Simulasi memakai T₁–T₄ hasil hitungan. Faktor efisiensi dump truck dimasukkan dengan memperpanjang waktu angkut, buang, dan kembali secara proporsional, sehingga kapasitas truk di simulasi sama dengan rumus. Angka produksi teramati mendekati hitungan setelah beberapa jam simulasi, karena di awal semua truk mulai dari antrean.</p>
+    </div>
+    <div>
+      <h2 style="font-size:1.3rem">Simulasi armada</h2>
+      <div class="controls">
+        <button class="primary" type="button" id="btnPlay">Jeda</button>
+        <button type="button" id="btnReset">Ulang</button>
+      </div>
+      <div class="controls" role="group" aria-label="Kecepatan simulasi">
+        <span class="hint">1 detik layar =</span>
+        <button type="button" data-speed="0.5" aria-pressed="false">½ mnt</button>
+        <button type="button" data-speed="1" aria-pressed="true">1 mnt</button>
+        <button type="button" data-speed="3" aria-pressed="false">3 mnt</button>
+        <button type="button" data-speed="10" aria-pressed="false">10 mnt</button>
+      </div>
+      <div class="simstats">
+        <div><span class="num" id="sTime">0:00</span><small>waktu simulasi (jam:menit)</small></div>
+        <div><span class="num" id="sTrips">0</span><small>rit selesai dibuang</small></div>
+        <div><span class="num" id="sRate">–</span><small>produksi teramati, m³ lepas/jam</small></div>
+        <div><span class="num" id="sUtil">–</span><small>excavator sibuk memuat</small></div>
+        <div><span class="num" id="sWait">–</span><small>rata-rata truk antre per rit</small></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel" aria-label="Data masukan">
+      <div class="noprint" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem">
+        <button type="button" id="btnExample">Muat contoh Permen (hlm. 58–59, 63–64)</button>
+        <button type="button" id="btnMatch">Pakai jumlah truk yang serasi</button>
+        <button type="button" id="btnDefaults">Kembalikan nilai awal</button>
+        <button type="button" id="btnPrint">Cetak hasil</button>
+      </div>
+      <div id="exampleMsg" class="msg info" hidden></div>
+
+      <fieldset>
+        <legend><span>1</span>Pekerjaan</legend>
+        <div class="row">
+          <div class="f"><label for="vol">Volume galian <small>(m³)</small></label><input type="number" id="vol" min="1" step="100"></div>
+          <div class="f"><label for="tk">Jam kerja efektif per hari</label><input type="number" id="tk" min="1" max="24" step="0.5"><span class="hint">Contoh AHSP memakai 7 jam.</span></div>
+          <div class="f"><label for="hpw">Hari kerja per minggu</label><input type="number" id="hpw" min="1" max="7" step="1"></div>
+          <div class="f"><label for="target">Target durasi <small>(hari kerja, opsional)</small></label><input type="number" id="target" min="0" step="1" placeholder="kosongkan jika tidak ada"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span>2</span>Excavator</legend>
+        <div class="f full"><label for="eq">Jenis excavator</label><select id="eq"></select></div>
+        <div class="row">
+          <div class="f"><label for="V">Kapasitas bucket, V <small>(m³ munjung)</small></label><input type="number" id="V" min="0.05" max="3" step="0.01"></div>
+          <div class="f"><label for="ne">Jumlah excavator</label><input type="number" id="ne" min="1" max="6" step="1"></div>
+        </div>
+        <div class="f full"><label for="soil">Jenis tanah <small>(Tabel A.11)</small></label>
+          <select id="soil"><option value="0">Pasir, kerikil, tanah lunak</option><option value="1">Tanah umumnya, lempung</option><option value="2">Lempung keras, tanah keras</option></select></div>
+        <div class="f full"><label for="fbcE">Kondisi pengisian bucket <small>(Tabel A.10)</small></label><select id="fbcE"></select><span class="hint" id="fbDesc"></span></div>
+        <div class="row">
+          <div class="f"><label for="fbE">Nilai Fb dipakai</label><input type="number" id="fbE" step="0.01"><span class="hint" id="fbRange"></span></div>
+          <div class="f"><label for="swing">Sudut putar <small>(°, 45–180)</small></label><input type="number" id="swing" min="45" max="180" step="5"></div>
+          <div class="f"><label for="depth">Kedalaman galian <small>(m)</small></label><input type="number" id="depth" min="0.1" step="0.1"></div>
+          <div class="f"><label for="dmax">Kedalaman gali maks. alat <small>(m)</small></label><input type="number" id="dmax" min="0.5" step="0.01"><span class="hint" id="dmaxHint"></span></div>
+        </div>
+        <div class="f full"><label for="dumpE">Kondisi membuang ke truk <small>(Tabel A.12)</small></label>
+          <select id="dumpE"><option value="0">Mudah</option><option value="1">Normal: sasaran besar (dump truck)</option><option value="2">Agak sulit</option><option value="3">Sulit</option></select></div>
+        <div class="f full"><label for="faE">Kondisi operasi <small>(Tabel A.13)</small></label><select id="faE"><option value="0.83">Baik (0,83)</option><option value="0.75">Sedang (0,75)</option><option value="0.67">Agak kurang (0,67)</option><option value="0.58">Kurang (0,58)</option></select></div>
+        <div class="derived" id="excInfo"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span>3</span>Dump truck</legend>
+        <div class="f full"><label for="dt">Jenis dump truck</label><select id="dt"></select></div>
+        <div class="row">
+          <div class="f"><label for="cap">Kapasitas bak, V <small>(ton)</small></label><input type="number" id="cap" min="1" max="40" step="0.5"></div>
+          <div class="f"><label for="nt">Jumlah dump truck</label><input type="number" id="nt" min="1" max="40" step="1"></div>
+          <div class="f"><label for="D">Berat isi material lepas, D <small>(ton/m³)</small></label><input type="number" id="D" min="0.8" max="3" step="0.01"><span class="hint">Contoh Permen: 1,60 untuk material galian.</span></div>
+          <div class="f"><label for="L">Jarak ke disposal, L <small>(km, satu arah)</small></label><input type="number" id="L" min="0.1" step="0.1"></div>
+        </div>
+        <div class="f full"><label for="medan">Kondisi jalan angkut <small>(Tabel A.9)</small></label>
+          <select id="medan"><option value="0">Datar (isi 40, kosong 60 km/jam)</option><option value="1">Menanjak (isi 20, kosong 40 km/jam)</option><option value="2">Menurun (isi 20, kosong 40 km/jam)</option><option value="3">Isi sendiri</option></select>
+          <span class="hint">Tabel A.9 memuat kecepatan rata-rata maksimum. Kondisi jalan proyek biasanya lebih lambat; isi sendiri bila ada data lapangan.</span></div>
+        <div class="row">
+          <div class="f"><label for="vF">Kecepatan bermuatan, v<sub>F</sub> <small>(km/jam)</small></label><input type="number" id="vF" min="1" max="80" step="1"></div>
+          <div class="f"><label for="vR">Kecepatan kosong, v<sub>R</sub> <small>(km/jam)</small></label><input type="number" id="vR" min="1" max="80" step="1"></div>
+          <div class="f"><label for="T4">Buang + ambil posisi, T₄ <small>(menit)</small></label><input type="number" id="T4" min="0" step="0.1"><span class="hint">Contoh Permen: 1,5 + 0,5 = 2,0 menit.</span></div>
+          <div class="f"><label for="faT">Kondisi kerja <small>(Tabel A.8)</small></label><select id="faT"><option value="0.83">Baik (0,83)</option><option value="0.80">Sedang (0,80)</option><option value="0.75">Kurang baik (0,75)</option><option value="0.70">Buruk (0,70)</option></select></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span>4</span>Opsi lanjutan</legend>
+        <div class="check"><input type="checkbox" id="tsManOn"><label for="tsManOn">Isi waktu siklus excavator sendiri <small>(tidak memakai Tabel A.11)</small></label></div>
+        <div class="f" id="tsManBox"><label for="tsMan">Ts excavator <small>(menit)</small></label><input type="number" id="tsMan" min="0.05" step="0.01"></div>
+        <div class="check"><input type="checkbox" id="t2On"><label for="t2On">Tambah waktu lain-lain excavator T₂ <small>(contoh Lampiran V SE 182/2025, tidak ada di rumus 28)</small></label></div>
+        <div class="f" id="t2Box"><label for="t2">T₂ <small>(menit)</small></label><input type="number" id="t2" min="0" step="0.01"></div>
+        <div class="check"><input type="checkbox" id="fkOn"><label for="fkOn">Volume galian adalah volume asli; kalikan produksi dengan Fk <small>(cara Lampiran V untuk excavator dan dump truck)</small></label></div>
+        <div class="f" id="fkBox"><label for="fk">Fk</label><input type="number" id="fk" min="0.3" max="1.5" step="0.01"><span class="hint">Contoh Lampiran V: 0,70 (galian biasa), 0,80 (tanah liat). Ambil dari tabel faktor konversi bahan yang berlaku.</span></div>
+      </fieldset>
+    </section>
+
+    <section class="panel results" aria-label="Hasil" aria-live="polite">
+      <div id="errors"></div>
+      <div class="big">
+        <div class="num" id="oDays">–</div>
+        <div class="lbl">hari kerja<br><span id="oDaysExact"></span></div>
+      </div>
+      <div id="bottleneck" class="msg info" style="margin-top:1rem"></div>
+      <div id="targetOut"></div>
+      <div class="kpis">
+        <div><span class="num" id="oQe">–</span><small>m³/jam per excavator</small></div>
+        <div><span class="num" id="oQt">–</span><small>m³/jam per dump truck</small></div>
+        <div><span class="num" id="oQs">–</span><small id="oQsLbl">produksi sistem, m³/jam</small></div>
+        <div><span class="num" id="oNt">–</span><small>dump truck serasi</small></div>
+        <div><span class="num" id="oUtil">–</span><small>utilisasi excavator</small></div>
+        <div><span class="num" id="oHours">–</span><small>jam kerja</small></div>
+      </div>
+
+      <div class="tabs noprint" role="tablist">
+        <button type="button" role="tab" aria-selected="true" data-tab="tSteps">Langkah perhitungan</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="tAlt">Alternatif konfigurasi</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="tCharts">Grafik keserasian</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="tTables">Tabel yang terpakai</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="tSketch">Sketsa kondisi</button>
+      </div>
+      <div class="tabpanel" id="tSteps"><ol class="steps" id="steps"></ol></div>
+      <div class="tabpanel" id="tAlt" hidden><div id="alt"></div></div>
+      <div class="tabpanel" id="tCharts" hidden>
+        <h3 style="margin-top:0">Produksi tiap kelompok alat</h3>
+        <p class="src" style="margin:0">Produksi sistem sama dengan kelompok yang paling kecil (kuning).</p>
+        <svg class="chart" id="chBars" viewBox="0 0 560 120" role="img" aria-label="Perbandingan produksi kelompok alat"></svg>
+        <h3>Jumlah dump truck terhadap produksi sistem</h3>
+        <p class="src" style="margin:0">Menambah truk menaikkan produksi hanya sampai kapasitas excavator (garis putus-putus). Setelah itu truk hanya menambah antrean.</p>
+        <svg class="chart" id="chTrucks" viewBox="0 0 560 270" role="img" aria-label="Produksi sistem terhadap jumlah dump truck"></svg>
+      </div>
+      <div class="tabpanel" id="tTables" hidden><div id="tables"></div></div>
+      <div class="tabpanel" id="tSketch" hidden><svg class="chart" id="sketch" viewBox="0 0 560 260" role="img" aria-label="Sketsa kedalaman galian dan sudut putar"></svg></div>
+    </section>
+  </div>
+
+  <section class="panel notes" style="margin-top:1.25rem">
+    <h2>Dasar perhitungan dan batasan</h2>
+    <ul>
+      <li>Excavator: rumus 28 dan Tabel A.10–A.13 Permen PUPR 8/2023 hlm. 62–64. Tabel A.11 diinterpolasi linear menurut sudut putar; ini tafsiran, Permen tidak menyebut cara interpolasinya.</li>
+      <li>Dump truck: rumus 27, Tabel A.8 dan A.9, hlm. 57–59. Waktu muat T₁ = V × 60 / (D × Q excavator), mengikuti contoh Permen.</li>
+      <li>Contoh dump truck di Permen memakai Q excavator 140,91 m³/jam, yang tidak cocok dengan contoh excavator di Permen sendiri (138,9 atau 105,26 m³/jam). Contoh itu juga memakai kecepatan kosong 30 km/jam, sedangkan keterangannya menyebut 40 km/jam.</li>
+      <li>Jumlah truk serasi = produksi excavator ÷ produksi satu truk, dibulatkan ke atas. Prinsip ini dari buku teks alat berat; Permen menghitung koefisien tiap alat terpisah dan tidak menuliskan rumus keserasian.</li>
+      <li>Produksi dihitung dalam volume lepas, kecuali opsi Fk dinyalakan.</li>
+      <li>Belum diperhitungkan: cuaca, mobilisasi, jam henti, perataan di disposal, dan variasi waktu siklus antarrit.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+function fmt(x,d){ if(!isFinite(x)) return "–"; return x.toLocaleString("id-ID",{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function niceStep(raw){ if(!(raw>0)) return 1; var p=Math.pow(10,Math.floor(Math.log10(raw))), m=raw/p; return (m<=1?1:m<=2?2:m<=5?5:10)*p; }
+
+/* ===== Data Permen PUPR 8/2023 ===== */
+var EXC=[
+  {id:"pc2007",name:"PC200-7, 0,93 m³ (acuan contoh Permen)",V:0.93,dmax:6.37},
+  {id:"E10",name:"E10, PC-200-8MO long arm, 0,45 m³",V:0.45},
+  {id:"E10a",name:"E10a, excavator 200 P, 0,80 m³",V:0.80},
+  {id:"E10b",name:"E10b, amphibius 200 P, 0,50 m³",V:0.50},
+  {id:"E10c",name:"E10c, excavator 80–140 HP, 0,90 m³",V:0.90},
+  {id:"E10d",name:"E10d, PC-130F-7, 0,53 m³",V:0.53},
+  {id:"E10e",name:"E10e, PC-195LC-8, 0,93 m³",V:0.93},
+  {id:"E10g",name:"E10g, PC-200-8MD, 1,00 m³",V:1.00},
+  {id:"custom",name:"Lainnya, isi sendiri",V:null}
+];
+var CLASSES=["0,10–0,60","0,60–1,25","1,25–2,20"];
+var SOILS=["Pasir, kerikil, tanah lunak","Tanah umumnya, lempung","Lempung keras, tanah keras"];
+var TS=[
+  [[10.8,14.6,14.6,18.4],[13.0,17.5,17.5,22.1],[16.6,22.4,22.4,28.2]],
+  [[14.4,18.2,18.2,22.1],[18.3,23.3,23.3,28.2],[22.3,28.3,28.3,34.4]],
+  [[16.6,20.4,20.4,24.3],[21.2,26.1,26.1,31.0],[25.8,31.8,31.8,37.8]]
+];
+var FV_ROWS=["< 40 %","40–75 %","> 75 %"], FV_COLS=["Mudah","Normal","Agak sulit","Sulit"];
+var FV=[[0.7,0.9,1.1,1.4],[0.8,1.0,1.3,1.6],[0.9,1.1,1.5,1.8]];
+var FB_E=[
+  {t:"Mudah",lo:1.1,hi:1.2,d:"Tanah biasa, lempung, tanah lembut; memuat dari stockpile tanpa perlu daya gali."},
+  {t:"Sedang",lo:1.0,hi:1.1,d:"Tanah biasa berpasir kering; pasir kering, tanah campur tanah liat, gravel belum disaring."},
+  {t:"Agak sulit",lo:0.9,hi:1.0,d:"Tanah biasa berbatu; batu belah, lempung keras, pasir campur gravel."},
+  {t:"Sulit",lo:0.8,hi:0.9,d:"Batu pecah, batu bongkah tak beraturan, batu hasil ledakan."}
+];
+var FA_E=[["Baik",0.83],["Sedang",0.75],["Agak kurang",0.67],["Kurang",0.58]];
+var DT=[
+  {id:"E35",name:"E35, dump truck 10 ton (contoh FN 527 ML)",cap:10},
+  {id:"E08a",name:"E08a, dump truck 7 ton (FM 517 HS)",cap:7},
+  {id:"E08",name:"E08, dump truck 4 ton (Colt FE SHDX)",cap:4},
+  {id:"custom",name:"Lainnya, isi sendiri",cap:null}
+];
+var MEDAN=[["Datar",40,60],["Menanjak",20,40],["Menurun",20,40]];
+var FA_T=[["Baik",0.83],["Sedang",0.80],["Kurang baik",0.75],["Buruk",0.70]];
+
+var DEF={vol:20000,tk:7,hpw:6,target:"",
+  eq:"pc2007",V:0.93,ne:1,soil:"1",fbcE:"1",fbE:1.05,swing:180,depth:2.0,dmax:6.37,dumpE:"1",faE:"0.83",
+  dt:"E35",cap:10,nt:5,D:1.60,L:2,medan:"1",vF:20,vR:40,T4:2.0,faT:"0.83",
+  tsManOn:false,tsMan:0.44,t2On:false,t2:0.10,fkOn:false,fk:0.80};
+
+function fill(sel,arr,fn){ arr.forEach(function(x,i){ var o=document.createElement("option"); var r=fn(x,i); o.value=r[0]; o.textContent=r[1]; $(sel).appendChild(o); }); }
+fill("eq",EXC,function(x){return [x.id,x.name];});
+fill("fbcE",FB_E,function(x,i){return [i,x.t+" ("+fmt(x.lo,1)+"–"+fmt(x.hi,1)+")"];});
+fill("dt",DT,function(x){return [x.id,x.name];});
+
+var NUMS=["vol","tk","hpw","target","V","ne","fbE","swing","depth","dmax","cap","nt","D","L","vF","vR","T4","tsMan","t2","fk"];
+var SELS=["eq","soil","fbcE","dumpE","faE","dt","medan","faT"];
+var CHKS=["tsManOn","t2On","fkOn"];
+function setAll(d){ NUMS.forEach(function(k){$(k).value=d[k];}); SELS.forEach(function(k){$(k).value=d[k];}); CHKS.forEach(function(k){$(k).checked=d[k];}); }
+setAll(DEF);
+
+document.querySelectorAll("input,select").forEach(function(e){ e.addEventListener("input",onInput); e.addEventListener("change",onInput); });
+function onInput(e){
+  var id=e.target.id;
+  if(id==="eq"){ var x=EXC.find(function(a){return a.id===$("eq").value;}); if(x.V!==null) $("V").value=x.V; $("dmax").value=x.dmax||""; }
+  if(id==="V"){ var c=EXC.find(function(a){return a.id===$("eq").value;}); if(c.V!==null&&Math.abs(c.V-parseFloat($("V").value))>1e-9) $("eq").value="custom"; }
+  if(id==="fbcE"){ var b=FB_E[+$("fbcE").value]; $("fbE").value=((b.lo+b.hi)/2).toFixed(2); }
+  if(id==="dt"){ var t=DT.find(function(a){return a.id===$("dt").value;}); if(t.cap!==null) $("cap").value=t.cap; }
+  if(id==="cap"){ var t2=DT.find(function(a){return a.id===$("dt").value;}); if(t2.cap!==null&&Math.abs(t2.cap-parseFloat($("cap").value))>1e-9) $("dt").value="custom"; }
+  if(id==="medan"){ var m=+$("medan").value; if(m<3){ $("vF").value=MEDAN[m][1]; $("vR").value=MEDAN[m][2]; } }
+  if(id==="vF"||id==="vR"){ var mm=+$("medan").value; if(mm<3&&(+$("vF").value!==MEDAN[mm][1]||+$("vR").value!==MEDAN[mm][2])) $("medan").value="3"; }
+  $("exampleMsg").hidden=true;
+  update(true);
+}
+$("btnDefaults").addEventListener("click",function(){ setAll(DEF); $("exampleMsg").hidden=true; update(true); });
+$("btnPrint").addEventListener("click",function(){ window.print(); });
+$("btnMatch").addEventListener("click",function(){ if(R&&isFinite(R.ntRec)){ $("nt").value=R.ntRec; update(true); } });
+$("btnExample").addEventListener("click",function(){
+  setAll(Object.assign({},DEF,{vol:20000,eq:"pc2007",V:0.93,ne:1,fbcE:"1",fbE:1.00,faE:"0.83",depth:3.0,dmax:6.37,dumpE:"1",tsManOn:true,tsMan:0.44,
+    dt:"E35",cap:10,D:1.60,L:8.7,medan:"3",vF:20,vR:30,T4:2.0,faT:"0.83",nt:8}));
+  var m=$("exampleMsg");
+  m.innerHTML="Data contoh Permen: excavator hlm. 63–64 (V 0,93 m³, Fb 1,00, Fa 0,83, Fv 1,0, Ts 0,44 menit → 105,26 m³/jam) dan dump truck hlm. 58–59 (10 ton, D 1,60, L 8,7 km, v<sub>F</sub> 20 dan v<sub>R</sub> 30 km/jam, T₄ 2,0 menit). Permen menghitung dump truck dengan Q excavator 140,91 m³/jam sehingga T₁ = 2,66 menit dan Q = 6,46 m³/jam. Dengan Q excavator 105,26 yang konsisten, T₁ = 3,56 menit dan Q = 6,34 m³/jam. Kedalaman diatur 3,0 m agar Fv = 1,0 seperti di Permen.";
+  m.hidden=false; update(true);
+});
+document.querySelectorAll("[data-tab]").forEach(function(b){ b.addEventListener("click",function(){ document.querySelectorAll("[data-tab]").forEach(function(x){ x.setAttribute("aria-selected",x===b?"true":"false"); $(x.getAttribute("data-tab")).hidden=(x!==b); }); }); });
+
+/* ===== Compute ===== */
+function n(id){ var v=parseFloat($(id).value); return isFinite(v)?v:NaN; }
+var R=null;
+function compute(){
+  var r={errors:[],warns:[]};
+  r.vol=n("vol"); r.tk=n("tk"); r.hpw=n("hpw"); r.target=n("target");
+  r.fkOn=$("fkOn").checked; r.Fk=r.fkOn?n("fk"):1;
+  if(!(r.vol>0)) r.errors.push("Isi volume galian.");
+  if(!(r.tk>0&&r.tk<=24)) r.errors.push("Jam kerja per hari harus 0–24.");
+  if(!(r.hpw>=1&&r.hpw<=7)) r.errors.push("Hari kerja per minggu harus 1–7.");
+  if(r.fkOn&&!(r.Fk>0)) r.errors.push("Isi nilai Fk.");
+
+  r.V=n("V"); r.ne=Math.round(n("ne")); r.soil=+$("soil").value; r.fbcE=+$("fbcE").value; r.FbE=n("fbE");
+  r.swing=n("swing"); r.depth=n("depth"); r.dmax=n("dmax"); r.dumpE=+$("dumpE").value; r.FaE=parseFloat($("faE").value);
+  r.tsManOn=$("tsManOn").checked; r.tsMan=n("tsMan"); r.t2On=$("t2On").checked; r.T2e=r.t2On?n("t2"):0;
+  if(!(r.V>0)) r.errors.push("Isi kapasitas bucket.");
+  if(!(r.ne>=1)) r.errors.push("Jumlah excavator minimal 1.");
+  if(r.ne>6) r.errors.push("Jumlah excavator dibatasi 6.");
+  if(!(r.FbE>0)) r.errors.push("Isi Fb excavator.");
+  r.cls=r.V<=0.60?0:r.V<=1.25?1:2;
+  if(r.V<0.10||r.V>2.20) r.warns.push("Kapasitas bucket di luar rentang Tabel A.11 (0,10–2,20 m³); dipakai baris terdekat.");
+  r.sw=Math.min(180,Math.max(45,r.swing)); if(!(r.swing>=45&&r.swing<=180)) r.warns.push("Sudut putar dibatasi 45°–180°.");
+  var row=TS[r.cls][r.soil];
+  if(r.sw<=90){ r.tsSec=row[0]+(row[1]-row[0])*(r.sw-45)/45; r.band=0; } else { r.tsSec=row[2]+(row[3]-row[2])*(r.sw-90)/90; r.band=1; }
+  r.TsTab=r.tsSec/60;
+  if(r.tsManOn&&!(r.tsMan>0)) r.errors.push("Isi Ts manual.");
+  if(r.t2On&&!(r.T2e>=0)) r.errors.push("Isi T₂.");
+  r.TsE=(r.tsManOn?r.tsMan:r.TsTab)+r.T2e;
+  if(!(r.depth>0)) r.errors.push("Isi kedalaman galian.");
+  if(!(r.dmax>0)) r.errors.push("Isi kedalaman gali maksimum excavator (dari brosur).");
+  r.ratio=r.depth/r.dmax; if(r.ratio>1) r.errors.push("Kedalaman galian melebihi kemampuan excavator.");
+  r.fvRow=r.ratio<0.40?0:r.ratio<=0.75?1:2; r.Fv=FV[r.fvRow][r.dumpE];
+  var be=FB_E[r.fbcE]; if(r.FbE<be.lo-1e-9||r.FbE>be.hi+1e-9) r.warns.push("Fb "+fmt(r.FbE,2)+" di luar rentang kondisi "+be.t.toLowerCase()+".");
+  r.Qe=r.V*r.FbE*r.FaE*60/(r.TsE*r.Fv);
+
+  r.cap=n("cap"); r.nt=Math.round(n("nt")); r.D=n("D"); r.L=n("L"); r.vF=n("vF"); r.vR=n("vR"); r.T4=n("T4"); r.FaT=parseFloat($("faT").value); r.medan=+$("medan").value;
+  if(!(r.cap>0)) r.errors.push("Isi kapasitas bak.");
+  if(!(r.nt>=1)) r.errors.push("Jumlah dump truck minimal 1.");
+  if(r.nt>40) r.errors.push("Jumlah dump truck dibatasi 40.");
+  if(!(r.D>0)) r.errors.push("Isi berat isi material lepas.");
+  if(!(r.L>0)) r.errors.push("Isi jarak ke disposal.");
+  if(!(r.vF>0&&r.vR>0)) r.errors.push("Isi kecepatan dump truck.");
+  if(!(r.T4>=0)) r.errors.push("Isi T₄.");
+  r.Vm3=r.cap/r.D; r.passes=r.Vm3/(r.V*r.FbE);
+  r.T1=r.cap*60/(r.D*r.Qe); r.T2=r.L/r.vF*60; r.T3=r.L/r.vR*60;
+  r.TsT=r.T1+r.T2+r.T3+r.T4;
+  r.Qt=r.cap*r.FaT*60/(r.D*r.TsT);
+
+  r.QE=r.Qe*r.ne; r.QT=r.Qt*r.nt; r.Qsys=Math.min(r.QE,r.QT); r.limit=r.QE<=r.QT?"exc":"dt";
+  r.QsysPay=r.Qsys*r.Fk;
+  r.hours=r.vol/r.QsysPay; r.days=r.hours/r.tk; r.daysCeil=Math.ceil(r.days-1e-9); r.weeks=r.daysCeil/r.hpw;
+  r.ntRec=Math.ceil(r.QE/r.Qt-1e-9); r.utilE=r.Qsys/r.QE; r.utilT=r.Qsys/r.QT;
+  r.koefE=1/(r.Qe*r.Fk); r.koefT=1/(r.Qt*r.Fk);
+  if(r.target>0){ r.neReq=Math.ceil(r.vol/(r.Qe*r.Fk*r.tk*r.target)-1e-9); r.ntReq=Math.ceil(r.neReq*r.Qe/r.Qt-1e-9); }
+  return r;
+}
+
+/* ===== Render ===== */
+function fx(s){ return '<span class="fx">'+s+'</span>'; }
+function renderSteps(r){
+  var s=[];
+  s.push('<h4>Excavator (rumus 28)</h4>');
+  var tsHtml;
+  if(r.tsManOn){ tsHtml=fx('Ts = <b>'+fmt(r.tsMan,3)+'</b> menit (diisi manual)')+'<span class="src">Pembanding Tabel A.11: '+fmt(r.tsSec,1)+' detik = '+fmt(r.TsTab,3)+' menit.</span>'; }
+  else {
+    var row=TS[r.cls][r.soil],a,b,lo,hi; if(r.band===0){lo=45;hi=90;a=row[0];b=row[1];}else{lo=90;hi=180;a=row[2];b=row[3];}
+    tsHtml='<span class="src">Tabel A.11: bucket '+CLASSES[r.cls]+' m³, '+SOILS[r.soil].toLowerCase()+', swing '+fmt(r.sw,0)+'°.</span>'+
+      ((r.sw===lo||r.sw===hi)?fx('Ts = '+fmt(r.tsSec,1)+' detik'):fx('Ts = '+fmt(a,1)+' + ('+fmt(b,1)+' − '+fmt(a,1)+') × ('+fmt(r.sw,0)+' − '+lo+')/('+hi+' − '+lo+') = '+fmt(r.tsSec,2)+' detik'))+
+      fx('Ts = '+fmt(r.tsSec,2)+' / 60 = <b>'+fmt(r.TsTab,3)+'</b> menit');
+  }
+  if(r.t2On) tsHtml+=fx('Ts₁ = Ts + T₂ = '+fmt(r.TsE-r.T2e,3)+' + '+fmt(r.T2e,2)+' = <b>'+fmt(r.TsE,3)+'</b> menit');
+  s.push('<li><span class="what">Waktu siklus excavator</span>'+tsHtml+'</li>');
+  s.push('<li><span class="what">Faktor konversi galian (Tabel A.12)</span>'+fx('Rasio = '+fmt(r.depth,2)+' / '+fmt(r.dmax,2)+' = '+fmt(r.ratio*100,1)+' % → baris '+FV_ROWS[r.fvRow])+fx('Kondisi membuang '+FV_COLS[r.dumpE].toLowerCase()+' → Fv = <b>'+fmt(r.Fv,1)+'</b>')+'</li>');
+  s.push('<li><span class="what">Produktivitas satu excavator</span>'+fx('Q<sub>exc</sub> = V × Fb × Fa × 60 / (Ts × Fv)')+
+    fx('= '+fmt(r.V,2)+' × '+fmt(r.FbE,2)+' × '+fmt(r.FaE,2)+' × 60 / ('+fmt(r.TsE,3)+' × '+fmt(r.Fv,1)+') = <b>'+fmt(r.Qe,2)+'</b> m³/jam')+'</li>');
+
+  s.push('<h4>Dump truck (rumus 27)</h4>');
+  s.push('<li><span class="what">Volume bak</span>'+fx('Volume = V / D = '+fmt(r.cap,1)+' / '+fmt(r.D,2)+' = '+fmt(r.Vm3,2)+' m³ lepas')+
+    fx('Setara ≈ '+fmt(r.Vm3,2)+' / ('+fmt(r.V,2)+' × '+fmt(r.FbE,2)+') = '+fmt(r.passes,1)+' kali pengisian bucket')+'</li>');
+  s.push('<li><span class="what">Waktu siklus dump truck</span>'+
+    fx('T₁ muat = V × 60 / (D × Q<sub>exc</sub>) = '+fmt(r.cap,1)+' × 60 / ('+fmt(r.D,2)+' × '+fmt(r.Qe,2)+') = '+fmt(r.T1,2)+' menit')+
+    fx('T₂ angkut isi = L / v<sub>F</sub> × 60 = '+fmt(r.L,2)+' / '+fmt(r.vF,0)+' × 60 = '+fmt(r.T2,2)+' menit')+
+    fx('T₃ kembali kosong = L / v<sub>R</sub> × 60 = '+fmt(r.L,2)+' / '+fmt(r.vR,0)+' × 60 = '+fmt(r.T3,2)+' menit')+
+    fx('T₄ buang + ambil posisi = '+fmt(r.T4,2)+' menit')+
+    fx('Ts = '+fmt(r.T1,2)+' + '+fmt(r.T2,2)+' + '+fmt(r.T3,2)+' + '+fmt(r.T4,2)+' = <b>'+fmt(r.TsT,2)+'</b> menit')+'</li>');
+  s.push('<li><span class="what">Produktivitas satu dump truck</span>'+fx('Q<sub>DT</sub> = V × Fa × 60 / (D × Ts)')+
+    fx('= '+fmt(r.cap,1)+' × '+fmt(r.FaT,2)+' × 60 / ('+fmt(r.D,2)+' × '+fmt(r.TsT,2)+') = <b>'+fmt(r.Qt,2)+'</b> m³ lepas/jam')+'</li>');
+
+  s.push('<h4>Konfigurasi alat</h4>');
+  s.push('<li><span class="what">Jumlah dump truck yang serasi</span>'+fx('n<sub>DT</sub> = n<sub>exc</sub> × Q<sub>exc</sub> / Q<sub>DT</sub> = '+r.ne+' × '+fmt(r.Qe,2)+' / '+fmt(r.Qt,2)+' = '+fmt(r.QE/r.Qt,2)+' → <b>'+r.ntRec+'</b> unit')+'</li>');
+  s.push('<li><span class="what">Produksi sistem</span>'+fx('Excavator: '+r.ne+' × '+fmt(r.Qe,2)+' = '+fmt(r.QE,2)+' m³/jam')+fx('Dump truck: '+r.nt+' × '+fmt(r.Qt,2)+' = '+fmt(r.QT,2)+' m³/jam')+
+    fx('Q<sub>sistem</sub> = min('+fmt(r.QE,2)+'; '+fmt(r.QT,2)+') = <b>'+fmt(r.Qsys,2)+'</b> m³ lepas/jam')+
+    (r.fkOn?fx('Volume asli: '+fmt(r.Qsys,2)+' × Fk '+fmt(r.Fk,2)+' = <b>'+fmt(r.QsysPay,2)+'</b> m³ asli/jam'):'')+'</li>');
+  s.push('<li><span class="what">Durasi pekerjaan</span>'+fx('Jam kerja = '+fmt(r.vol,0)+' / '+fmt(r.QsysPay,2)+' = '+fmt(r.hours,1)+' jam')+
+    fx('Hari kerja = '+fmt(r.hours,1)+' / '+fmt(r.tk,1)+' = '+fmt(r.days,2)+' → <b>'+r.daysCeil+'</b> hari')+fx('Minggu = '+r.daysCeil+' / '+fmt(r.hpw,0)+' = <b>'+fmt(r.weeks,1)+'</b> minggu')+'</li>');
+  s.push('<li><span class="what">Koefisien alat (AHSP)</span>'+fx('Excavator = 1 / '+(r.fkOn?'(Q<sub>exc</sub> × Fk)':'Q<sub>exc</sub>')+' = <b>'+fmt(r.koefE,4)+'</b> jam/m³')+fx('Dump truck = 1 / '+(r.fkOn?'(Q<sub>DT</sub> × Fk)':'Q<sub>DT</sub>')+' = <b>'+fmt(r.koefT,4)+'</b> jam/m³')+
+    '<span class="src">Koefisien per satu unit alat, seperti di analisis harga satuan. Rasio koefisien DT terhadap excavator ('+fmt(r.koefT/r.koefE,2)+') sama dengan jumlah truk serasi sebelum dibulatkan.</span></li>');
+  if(r.target>0) s.push('<li><span class="what">Konfigurasi untuk target '+fmt(r.target,0)+' hari kerja</span>'+
+    fx('n<sub>exc</sub> = Volume / (Q<sub>exc</sub>'+(r.fkOn?' × Fk':'')+' × jam/hari × target) = '+fmt(r.vol,0)+' / ('+fmt(r.Qe*r.Fk,2)+' × '+fmt(r.tk,1)+' × '+fmt(r.target,0)+') = '+fmt(r.vol/(r.Qe*r.Fk*r.tk*r.target),2)+' → <b>'+r.neReq+'</b> unit')+
+    fx('n<sub>DT</sub> = '+r.neReq+' × '+fmt(r.Qe,2)+' / '+fmt(r.Qt,2)+' → <b>'+r.ntReq+'</b> unit')+'</li>');
+  $("steps").innerHTML=s.join("");
+}
+
+function renderAlt(r){
+  var rows=[], best=-1;
+  for(var ne=1;ne<=6;ne++){
+    var nt=Math.ceil(ne*r.Qe/r.Qt-1e-9), q=Math.min(ne*r.Qe,nt*r.Qt)*r.Fk, h=r.vol/q, d=h/r.tk;
+    rows.push({ne:ne,nt:nt,q:q,h:h,d:d,dc:Math.ceil(d-1e-9)});
+    if(r.target>0&&best<0&&d<=r.target+1e-9) best=ne-1;
+  }
+  var t='<table><caption>Alternatif konfigurasi serasi (jenis alat dan kondisi lapangan sama seperti masukan)</caption><thead><tr><th>Excavator</th><th>Dump truck serasi</th><th>Produksi sistem, m³/jam</th><th>Jam kerja</th><th>Hari kerja</th></tr></thead><tbody>';
+  rows.forEach(function(x,i){ var cls=[]; if(i===best) cls.push("on"); if(x.ne===r.ne&&x.nt===r.nt) cls.push("cur");
+    t+='<tr class="'+cls.join(" ")+'"><td>'+x.ne+'</td><td>'+x.nt+'</td><td>'+fmt(x.q,1)+'</td><td>'+fmt(x.h,1)+'</td><td'+(i===best?' class="on"':'')+'>'+x.dc+'</td></tr>'; });
+  t+='</tbody></table>';
+  var note='<p class="src">Setiap baris memakai jumlah truk yang serasi dengan jumlah excavatornya.'+(r.target>0?' Baris kuning adalah konfigurasi paling sedikit alat yang memenuhi target '+fmt(r.target,0)+' hari.':' Isi target durasi untuk menandai konfigurasi yang memenuhi target.')+' Garis tebal di kiri menandai konfigurasi yang sedang dimasukkan, bila jumlah truknya serasi.</p>';
+  note+='<p class="src">Hal yang layak didiskusikan: konfigurasi dengan lebih banyak alat memang lebih cepat, tetapi butuh area galian lebih luas, jalan angkut yang tidak macet, dan biaya mobilisasi lebih besar. Pilihan terbaik biasanya ditentukan juga oleh biaya per m³, bukan hanya durasi.</p>';
+  $("alt").innerHTML='<div class="tbl-wrap">'+t+'</div>'+note;
+}
+
+function renderCharts(r){
+  var items=[["Excavator ("+r.ne+")",r.QE,"exc"],["Dump truck ("+r.nt+")",r.QT,"dt"]];
+  var W=560,L=130,Rr=70,max=Math.max(r.QE,r.QT)*1.05,g='';
+  items.forEach(function(it,i){ var y=14+i*48,w=(W-L-Rr)*it[1]/max,on=it[2]===r.limit;
+    g+='<text x="'+(L-10)+'" y="'+(y+20)+'" text-anchor="end" font-size="14" fill="var(--ink)">'+it[0]+'</text>';
+    g+='<rect x="'+L+'" y="'+y+'" width="'+w.toFixed(1)+'" height="30" rx="3" fill="'+(on?'var(--yellow)':'var(--steel)')+'" opacity="'+(on?1:0.5)+'"/>';
+    g+='<text x="'+(L+w+8)+'" y="'+(y+20)+'" font-size="14" font-weight="'+(on?700:400)+'" fill="var(--ink)">'+fmt(it[1],1)+'</text>'; });
+  $("chBars").innerHTML=g;
+  var K=Math.max(10,r.ntRec+4,r.nt+2),H=270,Lm=52,Rm=14,T=16,B=44,data=[];
+  for(var k=1;k<=K;k++) data.push(Math.min(r.QE,k*r.Qt));
+  var st=niceStep(r.QE/5),ymax=Math.ceil(r.QE*1.1/st)*st,bw=(W-Lm-Rm)/K,sy=function(v){return H-B-v/ymax*(H-T-B);},h='';
+  for(var v=0;v<=ymax+1e-9;v+=st) h+='<line x1="'+Lm+'" x2="'+(W-Rm)+'" y1="'+sy(v)+'" y2="'+sy(v)+'" stroke="var(--line)"/><text x="'+(Lm-6)+'" y="'+(sy(v)+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+fmt(v,0)+'</text>';
+  data.forEach(function(v,i){ var x=Lm+i*bw+bw*.15,w=bw*.7,on=(i+1)===r.nt;
+    h+='<rect x="'+x+'" y="'+sy(v)+'" width="'+w+'" height="'+(H-B-sy(v))+'" rx="2" fill="'+(on?'var(--yellow)':'var(--truck)')+'" opacity="'+(on?1:0.55)+'"/>';
+    if(K<=16||on) h+='<text x="'+(x+w/2)+'" y="'+(H-B+15)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+(i+1)+'</text>'; });
+  h+='<line x1="'+Lm+'" x2="'+(W-Rm)+'" y1="'+sy(r.QE)+'" y2="'+sy(r.QE)+'" stroke="var(--ink)" stroke-dasharray="6 4" stroke-width="1.5"/>';
+  h+='<text x="'+(W-Rm)+'" y="'+(sy(r.QE)-6)+'" text-anchor="end" font-size="12" fill="var(--ink)">kapasitas excavator '+fmt(r.QE,1)+'</text>';
+  h+='<text x="'+((Lm+W-Rm)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="13" fill="var(--ink)">Jumlah dump truck</text>';
+  h+='<text transform="translate(14,'+((T+H-B)/2)+') rotate(-90)" text-anchor="middle" font-size="13" fill="var(--ink)">m³ lepas/jam</text>';
+  $("chTrucks").innerHTML=h;
+}
+
+function tbl(caption,head,rows,onRow,onCol){
+  var h='<div class="tbl-wrap"><table><caption>'+caption+'</caption><thead><tr>'+head.map(function(x){return '<th>'+x+'</th>';}).join('')+'</tr></thead><tbody>';
+  rows.forEach(function(rw,i){ h+='<tr'+(i===onRow?' class="on"':'')+'>'; rw.forEach(function(c,j){ var on=i===onRow&&(onCol===undefined?j===rw.length-1:(Array.isArray(onCol)?onCol.indexOf(j)>=0:j===onCol)); h+='<td'+(on?' class="on"':(j===0?' class="l"':''))+'>'+c+'</td>'; }); h+='</tr>'; });
+  return h+'</tbody></table></div>';
+}
+function renderTables(r){
+  var h='',tsRows=[];
+  for(var c=0;c<3;c++) for(var so=0;so<3;so++) tsRows.push([CLASSES[c]+' m³, '+SOILS[so].toLowerCase()].concat(TS[c][so].map(function(v){return fmt(v,1);})));
+  h+=tbl('Tabel A.11 Waktu siklus standar backhoe (detik)'+(r.tsManOn?' — tidak dipakai, Ts diisi manual':''),['Bucket, tanah','45°','90°','90°','180°'],tsRows,r.tsManOn?-1:r.cls*3+r.soil,r.band===0?[1,2]:[3,4]);
+  h+=tbl('Tabel A.12 Faktor konversi galian (Fv)',['Kedalaman / maks'].concat(FV_COLS),FV.map(function(rw,i){return [FV_ROWS[i]].concat(rw.map(function(v){return fmt(v,1);}));}),r.fvRow,r.dumpE+1);
+  h+=tbl('Tabel A.10 Faktor bucket excavator (Fb)',['Kondisi','Kondisi lapangan','Fb'],FB_E.map(function(x){return [x.t,x.d,fmt(x.lo,1)+'–'+fmt(x.hi,1)];}),r.fbcE);
+  h+=tbl('Tabel A.13 Faktor efisiensi excavator',['Kondisi','Fa'],FA_E.map(function(x){return [x[0],fmt(x[1],2)];}),FA_E.findIndex(function(x){return x[1]===r.FaE;}));
+  h+=tbl('Tabel A.8 Faktor efisiensi dump truck',['Kondisi','Fa'],FA_T.map(function(x){return [x[0],fmt(x[1],2)];}),FA_T.findIndex(function(x){return x[1]===r.FaT;}));
+  h+=tbl('Tabel A.9 Kecepatan rata-rata maksimum dump truck (km/jam)',['Medan','Isi','Kosong'],MEDAN.map(function(x){return [x[0],x[1],x[2]];}),r.medan<3?r.medan:-1,[1,2]);
+  $("tables").innerHTML=h;
+}
+
+function renderSketch(r){
+  var g='',gx=20,gy=92,gw=250,scale=128/Math.max(r.dmax||1,r.depth||1,1);
+  g+='<text x="'+gx+'" y="20" font-size="15" font-weight="600" fill="var(--ink)" font-family="Barlow Condensed, Arial Narrow, sans-serif">Tampak samping: kedalaman galian</text>';
+  g+='<rect x="'+gx+'" y="'+gy+'" width="'+gw+'" height="140" fill="var(--soil-light)"/>';
+  g+='<line x1="'+gx+'" x2="'+(gx+gw)+'" y1="'+gy+'" y2="'+gy+'" stroke="var(--ink)" stroke-width="2"/>';
+  var dpx=Math.min(132,(r.depth||0)*scale),mpx=Math.min(136,(r.dmax||0)*scale);
+  g+='<rect x="'+(gx+130)+'" y="'+gy+'" width="90" height="'+dpx+'" fill="var(--bg)" stroke="var(--soil)"/>';
+  if(r.dmax>0) g+='<line x1="'+(gx+120)+'" x2="'+(gx+gw)+'" y1="'+(gy+mpx)+'" y2="'+(gy+mpx)+'" stroke="var(--warn)" stroke-dasharray="5 4" stroke-width="1.5"/><text x="'+(gx+gw-4)+'" y="'+(gy+mpx-5)+'" text-anchor="end" font-size="12" fill="var(--warn)">maks '+fmt(r.dmax,2)+' m</text>';
+  g+='<text x="'+(gx+226)+'" y="'+(gy+dpx/2+4)+'" font-size="12" fill="var(--ink)">'+fmt(r.depth,1)+' m</text>';
+  g+='<rect x="'+(gx+20)+'" y="'+(gy-18)+'" width="70" height="12" rx="5" fill="var(--steel)"/><rect x="'+(gx+30)+'" y="'+(gy-44)+'" width="48" height="26" rx="4" fill="var(--yellow)"/>';
+  var tipX=gx+175,tipY=gy+Math.max(dpx-10,4);
+  g+='<polyline points="'+(gx+72)+','+(gy-36)+' '+(gx+140)+','+(gy-48)+' '+tipX+','+tipY+'" fill="none" stroke="var(--yellow)" stroke-width="7" stroke-linejoin="round"/><rect x="'+(tipX-8)+'" y="'+(tipY-4)+'" width="16" height="14" rx="3" fill="var(--steel)"/>';
+  g+='<text x="'+gx+'" y="'+(gy+160)+'" font-size="13" fill="var(--ink)">Rasio '+fmt(r.ratio*100,1)+' % → baris '+FV_ROWS[r.fvRow]+'</text>';
+  var cx=420,cy=150,rad=80,a0=180,a1=180+r.sw;
+  function P(a,d){return [cx+d*Math.cos(a*Math.PI/180),cy+d*Math.sin(a*Math.PI/180)];}
+  g+='<text x="310" y="20" font-size="15" font-weight="600" fill="var(--ink)" font-family="Barlow Condensed, Arial Narrow, sans-serif">Tampak atas: sudut putar</text>';
+  var p0=P(a0,rad),p1=P(a1,rad);
+  g+='<path d="M'+p0[0]+','+p0[1]+' A'+rad+','+rad+' 0 0 1 '+p1[0]+','+p1[1]+'" fill="none" stroke="var(--yellow)" stroke-width="3" stroke-dasharray="7 5"/>';
+  var pit=P(a0,rad+22),trk=P(a1,rad+20);
+  g+='<ellipse cx="'+pit[0]+'" cy="'+pit[1]+'" rx="18" ry="14" fill="var(--soil)"/><text x="'+pit[0]+'" y="'+(pit[1]+30)+'" text-anchor="middle" font-size="12" fill="var(--ink)">galian</text>';
+  g+='<g transform="translate('+trk[0].toFixed(1)+','+trk[1].toFixed(1)+') rotate('+(a1+90)+')"><rect x="-22" y="-12" width="32" height="24" rx="2" fill="var(--truck)"/><rect x="12" y="-10" width="10" height="20" rx="2" fill="var(--steel)"/></g>';
+  g+='<rect x="'+(cx-22)+'" y="'+(cy-22)+'" width="44" height="44" rx="6" fill="var(--yellow)"/>';
+  var mid=P(a0+r.sw/2,rad-26); g+='<text x="'+mid[0]+'" y="'+(mid[1]+5)+'" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">'+fmt(r.sw,0)+'°</text>';
+  $("sketch").innerHTML=g;
+}
+
+function renderResults(r){
+  var html=''; r.errors.forEach(function(e){html+='<div class="msg">'+e+'</div>';}); r.warns.forEach(function(e){html+='<div class="msg info">'+e+'</div>';});
+  $("errors").innerHTML=html;
+  var ok=r.errors.length===0&&isFinite(r.Qsys)&&r.Qsys>0;
+  if(!ok){ ["oDays","oQe","oQt","oQs","oNt","oUtil","oHours"].forEach(function(id){$(id).textContent="–";}); $("oDaysExact").textContent=""; $("bottleneck").hidden=true; $("targetOut").innerHTML=""; $("steps").innerHTML='<li>Lengkapi data yang ditandai.</li>'; return false; }
+  $("bottleneck").hidden=false;
+  $("oDays").textContent=r.daysCeil; $("oDaysExact").textContent="("+fmt(r.days,2)+" hari sebelum dibulatkan, "+fmt(r.weeks,1)+" minggu)";
+  $("oQe").textContent=fmt(r.Qe,2); $("oQt").textContent=fmt(r.Qt,2);
+  $("oQs").textContent=fmt(r.QsysPay,1); $("oQsLbl").textContent="produksi sistem, m³ "+(r.fkOn?"asli":"lepas")+"/jam";
+  $("oNt").textContent=r.ntRec; $("oUtil").textContent=fmt(r.utilE*100,0)+" %"; $("oHours").textContent=fmt(r.hours,1);
+  var tip;
+  if(r.limit==="dt") tip="<b>Pembatas produksi: dump truck.</b> Excavator menganggur sekitar "+fmt((1-r.utilE)*100,0)+" % waktu karena menunggu truk. Tambah truk menjadi "+r.ntRec+" unit agar serasi.";
+  else tip="<b>Pembatas produksi: excavator.</b> "+(r.nt>r.ntRec?"Truk berlebih "+(r.nt-r.ntRec)+" unit, sehingga truk antre dan utilisasi truk hanya "+fmt(r.utilT*100,0)+" %.":"Jumlah truk sudah serasi dengan excavator.");
+  $("bottleneck").innerHTML=tip;
+  $("targetOut").innerHTML=(r.target>0)?'<div class="msg info">Untuk target <b>'+fmt(r.target,0)+' hari kerja</b> dibutuhkan minimal <b>'+r.neReq+' excavator</b> dan <b>'+r.ntReq+' dump truck</b>. '+(r.daysCeil<=r.target?'Konfigurasi saat ini sudah memenuhi target.':'Konfigurasi saat ini belum memenuhi target.')+'</div>':"";
+  $("excInfo").innerHTML="Ts = <b>"+fmt(r.TsE,3)+" menit</b>, Fv = <b>"+fmt(r.Fv,1)+"</b>, Q = <b>"+fmt(r.Qe,2)+" m³/jam</b> per excavator";
+  renderSteps(r); renderAlt(r); renderCharts(r); renderTables(r); renderSketch(r);
+  return true;
+}
+
+/* ===== Simulation ===== */
+var svg=$("site"),NS="http://www.w3.org/2000/svg";
+var sim=null,playing=!window.matchMedia("(prefers-reduced-motion: reduce)").matches,speed=1,last=null;
+var LOAD_X=205,HAUL_Y=112,RET_Y=226,DUMP=[745,168],QUEUE_Y=296;
+function el(tag,attrs,parent){ var e=document.createElementNS(NS,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); (parent||svg).appendChild(e); return e; }
+function buildScene(r){
+  svg.innerHTML="";
+  el("rect",{x:0,y:0,width:900,height:330,fill:"var(--ground)"});
+  el("rect",{x:20,y:30,width:150,height:236,rx:14,fill:"var(--soil)",opacity:.85});
+  el("text",{x:95,y:22,"text-anchor":"middle","font-size":14,fill:"var(--ink)","font-weight":600}).textContent="Lokasi galian";
+  el("path",{d:"M"+LOAD_X+",150 L250,"+HAUL_Y+" L700,"+HAUL_Y+" L"+DUMP[0]+","+DUMP[1],fill:"none",stroke:"var(--road)","stroke-width":22,"stroke-linecap":"round","stroke-linejoin":"round"});
+  el("path",{d:"M"+DUMP[0]+","+DUMP[1]+" L700,"+RET_Y+" L250,"+RET_Y+" L232,"+QUEUE_Y,fill:"none",stroke:"var(--road)","stroke-width":22,"stroke-linecap":"round","stroke-linejoin":"round"});
+  el("text",{x:475,y:HAUL_Y-18,"text-anchor":"middle","font-size":13,fill:"var(--muted)"}).textContent="angkut bermuatan, L = "+fmt(r.L,1)+" km, "+fmt(r.vF,0)+" km/jam";
+  el("text",{x:475,y:RET_Y+34,"text-anchor":"middle","font-size":13,fill:"var(--muted)"}).textContent="kembali kosong, "+fmt(r.vR,0)+" km/jam";
+  el("rect",{x:760,y:40,width:125,height:240,rx:10,fill:"var(--soil-light)"});
+  el("text",{x:822,y:30,"text-anchor":"middle","font-size":14,fill:"var(--ink)","font-weight":600}).textContent="Disposal";
+  sim.pile=el("ellipse",{cx:822,cy:165,rx:6,ry:5,fill:"var(--soil)"});
+  sim.queueLbl=el("text",{x:232,y:QUEUE_Y-18,"font-size":12,fill:"var(--muted)"});
+  sim.excG=[];
+  for(var k=0;k<r.ne;k++){
+    var g=el("g",{transform:"translate(110,"+sim.loadY[k]+")"});
+    el("rect",{x:-26,y:-22,width:14,height:44,rx:5,fill:"var(--steel)"},g);
+    el("rect",{x:-18,y:-16,width:34,height:32,rx:5,fill:"var(--yellow)"},g);
+    var arm=el("g",{},g);
+    el("rect",{x:10,y:-4,width:62,height:8,rx:3,fill:"var(--yellow)"},arm);
+    el("rect",{x:66,y:-8,width:12,height:16,rx:2,fill:"var(--steel)"},arm);
+    sim.excG.push(arm);
+  }
+  sim.truckG=[];
+  for(var i=0;i<r.nt;i++){
+    var t=el("g",{});
+    el("rect",{x:-15,y:-9,width:22,height:18,rx:2,fill:"var(--truck)"},t);
+    var bed=el("rect",{x:-13,y:-7,width:18,height:14,rx:1,fill:"var(--soil)",opacity:0},t);
+    el("rect",{x:8,y:-8,width:8,height:16,rx:2,fill:"var(--steel)"},t);
+    sim.truckG.push({g:t,bed:bed});
+  }
+}
+function resetSim(r){
+  var kx=(r.TsT/r.FaT-r.T1)/Math.max(r.T2+r.T3+r.T4,1e-9);
+  var sp={ne:r.ne,nt:r.nt,T1:r.T1,T2:r.T2*kx,T3:r.T3*kx,T4:r.T4*kx,Vm3:r.Vm3,TsE:r.TsE};
+  sim={t:0,trips:0,vol:0,wait:0,loads:0,busy:new Array(r.ne).fill(0),excT:new Array(r.ne).fill(-1),queue:[],trucks:[],p:sp};
+  var span=220/r.ne; sim.loadY=[]; for(var k=0;k<r.ne;k++) sim.loadY.push(40+span*(k+0.5));
+  for(var i=0;i<r.nt;i++){ sim.trucks.push({st:"queue",rem:0,k:-1,since:0}); sim.queue.push(i); }
+  buildScene(r); assign();
+}
+function assign(){
+  for(var k=0;k<sim.p.ne;k++) if(sim.excT[k]===-1&&sim.queue.length){ var i=sim.queue.shift(),tr=sim.trucks[i]; sim.wait+=sim.t-tr.since; sim.loads++; tr.st="load"; tr.rem=sim.p.T1; tr.k=k; sim.excT[k]=i; }
+}
+function stepSim(dt){
+  var p=sim.p;
+  for(var k=0;k<p.ne;k++) if(sim.excT[k]!==-1) sim.busy[k]+=dt;
+  sim.t+=dt;
+  sim.trucks.forEach(function(tr,i){
+    if(tr.st==="queue") return;
+    tr.rem-=dt; if(tr.rem>0) return;
+    if(tr.st==="load"){ sim.excT[tr.k]=-1; tr.fromK=tr.k; tr.k=-1; tr.st="haul"; tr.rem=p.T2+tr.rem; }
+    else if(tr.st==="haul"){ tr.st="dump"; tr.rem=p.T4+tr.rem; }
+    else if(tr.st==="dump"){ tr.st="ret"; tr.rem=p.T3+tr.rem; sim.trips++; sim.vol+=p.Vm3; }
+    else if(tr.st==="ret"){ tr.st="queue"; tr.since=sim.t; sim.queue.push(i); }
+  });
+  assign();
+}
+function lerp(a,b,t){return a+(b-a)*t;}
+function along(pts,f){
+  var segs=[],tot=0; for(var i=0;i<pts.length-1;i++){ var d=Math.hypot(pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]); segs.push(d); tot+=d; }
+  var s=Math.max(0,Math.min(1,f))*tot; for(var j=0;j<segs.length;j++){ if(s<=segs[j]||j===segs.length-1){ var u=segs[j]?Math.min(1,s/segs[j]):0,a=pts[j],b=pts[j+1]; return [lerp(a[0],b[0],u),lerp(a[1],b[1],u),Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI]; } s-=segs[j]; }
+}
+function drawSim(){
+  var p=sim.p;
+  sim.trucks.forEach(function(tr,i){
+    var pos,loaded=0,g=sim.truckG[i];
+    if(tr.st==="queue"){ var qi=sim.queue.indexOf(i),col=qi%14,rq=Math.min(1,Math.floor(qi/14)); pos=[232+col*34,QUEUE_Y+rq*22-(rq?4:0),0]; }
+    else if(tr.st==="load"){ pos=[LOAD_X+22,sim.loadY[tr.k],180]; loaded=1-tr.rem/p.T1; }
+    else if(tr.st==="haul"){ pos=along([[LOAD_X+22,sim.loadY[tr.fromK]],[250,HAUL_Y],[700,HAUL_Y],DUMP],1-tr.rem/p.T2); loaded=1; }
+    else if(tr.st==="dump"){ pos=[DUMP[0],DUMP[1],90]; loaded=tr.rem/Math.max(p.T4,1e-6); }
+    else pos=along([DUMP,[700,RET_Y],[250,RET_Y],[232,QUEUE_Y]],1-tr.rem/p.T3);
+    g.g.setAttribute("transform","translate("+pos[0].toFixed(1)+","+pos[1].toFixed(1)+") rotate("+pos[2].toFixed(1)+")");
+    g.bed.setAttribute("opacity",Math.max(0,Math.min(1,loaded)).toFixed(2));
+  });
+  for(var k=0;k<p.ne;k++){ var busy=sim.excT[k]!==-1,a=busy?Math.sin(sim.t*2*Math.PI/p.TsE)*40-10:-60; sim.excG[k].setAttribute("transform","rotate("+a.toFixed(1)+")"); }
+  var rpx=Math.min(55,6+Math.sqrt(sim.vol)*1.2); sim.pile.setAttribute("rx",rpx.toFixed(1)); sim.pile.setAttribute("ry",(rpx*0.85).toFixed(1));
+  sim.queueLbl.textContent=sim.queue.length?sim.queue.length+" truk antre":"";
+  var hh=Math.floor(sim.t/60),mm=Math.floor(sim.t%60);
+  $("sTime").textContent=hh+":"+(mm<10?"0":"")+mm;
+  $("sTrips").textContent=sim.trips;
+  $("sRate").textContent=sim.t>30?fmt(sim.vol/sim.t*60,1):"–";
+  var ub=sim.busy.reduce(function(a,b){return a+b;},0)/(p.ne*Math.max(sim.t,1e-6));
+  $("sUtil").textContent=sim.t>5?fmt(ub*100,0)+" %":"–";
+  $("sWait").textContent=sim.loads>p.nt?fmt(sim.wait/sim.loads,1)+" menit":"–";
+}
+function loop(ts){
+  if(last===null) last=ts;
+  var dt=Math.min((ts-last)/1000,0.1); last=ts;
+  if(sim&&playing){ var total=dt*speed; while(total>1e-9){ var s=Math.min(total,0.02); stepSim(s); total-=s; } }
+  if(sim) drawSim();
+  requestAnimationFrame(loop);
+}
+$("btnPlay").addEventListener("click",function(){ playing=!playing; this.textContent=playing?"Jeda":"Putar"; });
+$("btnReset").addEventListener("click",function(){ if(R&&R.errors.length===0) resetSim(R); });
+document.querySelectorAll("[data-speed]").forEach(function(b){ b.addEventListener("click",function(){ speed=+b.getAttribute("data-speed"); document.querySelectorAll("[data-speed]").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");}); }); });
+$("btnPlay").textContent=playing?"Jeda":"Putar";
+
+function update(resetSimulation){
+  $("tsManBox").hidden=!$("tsManOn").checked; $("t2Box").hidden=!$("t2On").checked; $("fkBox").hidden=!$("fkOn").checked;
+  var eq=EXC.find(function(a){return a.id===$("eq").value;});
+  $("dmaxHint").textContent=eq.dmax?"Data PC200-7 dari Permen.":"Isi dari brosur alat.";
+  var b=FB_E[+$("fbcE").value]; $("fbDesc").textContent=b.d; $("fbRange").textContent="Rentang "+b.t.toLowerCase()+": "+fmt(b.lo,1)+"–"+fmt(b.hi,1);
+  R=compute();
+  var ok=renderResults(R);
+  if(ok&&resetSimulation) resetSim(R);
+}
+update(true);
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
